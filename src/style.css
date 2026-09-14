@@ -98,6 +98,22 @@ code {
   background: var(--code-bg);
 }
 
+
+button {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #5849c4;
+}
+
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;

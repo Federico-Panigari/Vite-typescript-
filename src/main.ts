@@ -15,28 +15,115 @@ const utente: user= {
 
 
 //Todo
-let tasks : Todo[]= []
+type Filtro ="tutte" | "attive" | "completate";
 
-const input = document.querySelector<HTMLInputElement>("#nuovaTask")!
-const bottone = document.querySelector<HTMLButtonElement>("#aggiungi")!
-const lista = document.querySelector<HTMLUListElement>("#lista")!
+
+let todos : Todo[]= []
+
+let filtroCorrente: Filtro ="tutte"
+
+const input = document.querySelector<HTMLInputElement>("#todo-input")!
+const addBtn = document.querySelector<HTMLButtonElement>("#add-btn")!
+const list = document.querySelector<HTMLULListElement>("#todo-list")!
 
 // Evento click
-bottone.addEventListener("click", () => {
+addBtn.addEventListener("click", () => {
+  const testo = input.value.trim();
+  if (testo === "") return;
 
-  const testo = input.value
+  const nuova: Todo = {
+    id: Date.now(),
+    testo,
+    completata: false,
+  };
 
-  const nuovaTodo: Todo = {
-    testo: testo
+  todos.push(nuova);
+  input.value = "";
+  salva();
+  renderTodos();
+});
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addBtn.click();
   }
+});
 
-  tasks.push(nuovaTodo)
 
-  lista.innerHTML += `<li>${nuovaTodo.testo}</li>`
+//evento render lista
+function renderTodos() {
+  list.innerHTML = "";
 
-  input.value = ""
-})
+  const daMostrare = todos.filter((t) => {
+    if (filtroCorrente === "attive") return !t.completata;
+    if (filtroCorrente === "completate") return t.completata;
+    return true;
+  });
 
+  for (const todo of daMostrare) {
+    const li = document.createElement("li");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todo.completata;
+    checkbox.addEventListener("change", () => {
+      todo.completata = checkbox.checked;
+      salva();
+      renderTodos();
+    });
+
+    const span = document.createElement("span");
+    span.textContent = todo.testo;
+    if (todo.completata) {
+      span.style.textDecoration = "line-through";
+      span.style.opacity = "0.6";
+    }
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Elimina";
+    deleteBtn.addEventListener("click", () => {
+      todos = todos.filter((t) => t.id !== todo.id);
+      salva();
+      renderTodos();
+    });
+
+    li.append(checkbox, span, deleteBtn);
+    list.appendChild(li);
+  }
+} 
+
+
+document.querySelector("#filter-all")!.addEventListener("click", () => {
+  filtroCorrente = "tutte";
+  renderTodos();
+});
+
+document.querySelector("#filter-active")!.addEventListener("click", () => {
+  filtroCorrente = "attive";
+  renderTodos();
+});
+
+document.querySelector("#filter-done")!.addEventListener("click", () => {
+  filtroCorrente = "completate";
+  renderTodos();
+});
+
+
+function salva() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function carica() {
+  const salvati = localStorage.getItem("todos");
+  if (salvati) {
+    todos = JSON.parse(salvati) as Todo[];
+  }
+}
+
+carica();
+renderTodos();
+
+/*
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 <h1>calcolatrice</h1>
 
@@ -55,5 +142,5 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     
     </ul>
 
-`
+`*/
 

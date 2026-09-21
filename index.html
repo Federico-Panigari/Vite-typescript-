@@ -7,7 +7,22 @@
     <title>esercizio-ripasso-ts-base</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <h1>Todo List</h1>
+
+    <div class="input-row">
+      <input id="todo-input" type="text" placeholder="Nuova attività" />
+      <button id="add-btn">Aggiungi</button>
+    </div>
+
+    <div class="filters">
+      <button id="filter-all">Tutte</button>
+      <button id="filter-active">Da fare</button>
+      <button id="filter-done">Completate</button>
+    </div>
+
+    <ul id="todo-list"></ul>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
